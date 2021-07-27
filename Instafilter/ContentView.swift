@@ -9,7 +9,30 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        BlurTextView()
+        ActionSheetView()
+    }
+}
+
+struct ActionSheetView: View {
+    @State private var showingActionSheet = false
+    @State private var backgroundColor = Color.white
+
+    var body: some View {
+        Text("Hello, world!")
+            .font(.largeTitle)
+            .frame(width: 300, height: 300)
+            .background(backgroundColor)
+            .onTapGesture {
+                showingActionSheet = true
+            }
+            .actionSheet(isPresented: $showingActionSheet) {
+                ActionSheet(title: Text("Change background"), message: Text("Select a new color"), buttons: [
+                    .default(Text("Red")) { backgroundColor = .red },
+                    .default(Text("Green")) { backgroundColor = .green },
+                    .default(Text("Blue")) { backgroundColor = .blue },
+                    .cancel()
+                ])
+            }
     }
 }
 
