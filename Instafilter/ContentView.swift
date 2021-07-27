@@ -9,8 +9,32 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+        BlurTextView()
+    }
+}
+
+struct BlurTextView: View {
+    @State private var blurAmount: CGFloat = 0
+
+    var body: some View {
+        let blur = Binding<CGFloat>(
+            get: {
+                blurAmount
+            },
+            set: {
+                blurAmount = $0
+                print("New value is \(blurAmount)")
+            }
+        )
+
+        VStack {
+            Text("Hello, world!")
+                .font(.largeTitle)
+                .blur(radius: blurAmount)
+
+            Slider(value: blur, in: 0 ... 20)
+                .padding()
+        }
     }
 }
 
