@@ -15,10 +15,21 @@ struct ContentView: View {
     @State private var showingImagePicker = false
     @State private var showingFilterSheet = false
     @State private var showingImageAlert = false
+    @State private var currentFilter: CIFilter = Self.filters[4].filter
+    @State private var filterName = Self.filters[4].name
     @State private var filterIntensity = 0.5
     @State private var inputImage: UIImage?
-    @State private var currentFilter: CIFilter = CIFilter.sepiaTone()
     let context = CIContext()
+
+    static let filters: [(filter: CIFilter, name: String)] = [
+        (CIFilter.crystallize(), "Crystallize"),
+        (CIFilter.edges(), "Edges"),
+        (CIFilter.gaussianBlur(), "Gaussian Blur"),
+        (CIFilter.pixellate(), "Pixellate"),
+        (CIFilter.sepiaTone(), "Sepia Tone"),
+        (CIFilter.unsharpMask(), "Unsharp Mask"),
+        (CIFilter.vignette(), "Vignette"),
+    ]
 
     var body: some View {
         let intensity = Binding<Double>(
@@ -58,7 +69,7 @@ struct ContentView: View {
                 .padding(.vertical)
 
                 HStack {
-                    Button("Change Filter") {
+                    Button(filterName) {
                         showingFilterSheet = true
                     }
 
@@ -76,13 +87,13 @@ struct ContentView: View {
             }
             .actionSheet(isPresented: $showingFilterSheet) {
                 ActionSheet(title: Text("Select a filter"), buttons: [
-                    .default(Text("Crystalize")) { setFilter(CIFilter.crystallize()) },
-                    .default(Text("Edges")) { setFilter(CIFilter.edges()) },
-                    .default(Text("Gaussian Blur")) { setFilter(CIFilter.gaussianBlur()) },
-                    .default(Text("Pixellate")) { setFilter(CIFilter.pixellate()) },
-                    .default(Text("Sepia Tone")) { setFilter(CIFilter.sepiaTone()) },
-                    .default(Text("Unsharp Mask")) { setFilter(CIFilter.unsharpMask()) },
-                    .default(Text("Vignette")) { setFilter(CIFilter.vignette()) },
+                    filterButton(0),
+                    filterButton(1),
+                    filterButton(2),
+                    filterButton(3),
+                    filterButton(4),
+                    filterButton(5),
+                    filterButton(6),
                     .cancel()
                 ])
             }
@@ -93,6 +104,13 @@ struct ContentView: View {
                     dismissButton: .default(Text("OK"))
                 )
             }
+        }
+    }
+
+    func filterButton(_ index: Int) -> ActionSheet.Button {
+        .default(Text(Self.filters[index].name)) {
+            setFilter(Self.filters[index].filter)
+            filterName = Self.filters[index].name
         }
     }
 
