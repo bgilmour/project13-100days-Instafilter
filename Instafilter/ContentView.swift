@@ -14,6 +14,7 @@ struct ContentView: View {
     @State private var processedImage: UIImage?
     @State private var showingImagePicker = false
     @State private var showingFilterSheet = false
+    @State private var showingImageAlert = false
     @State private var filterIntensity = 0.5
     @State private var inputImage: UIImage?
     @State private var currentFilter: CIFilter = CIFilter.sepiaTone()
@@ -85,6 +86,13 @@ struct ContentView: View {
                     .cancel()
                 ])
             }
+            .alert(isPresented: $showingImageAlert) {
+                Alert(
+                    title: Text("Save Error"),
+                    message: Text("No image selected"),
+                    dismissButton: .default(Text("OK"))
+                )
+            }
         }
     }
 
@@ -117,7 +125,10 @@ struct ContentView: View {
     }
 
     func saveImage() {
-        guard let processedImage = processedImage else { return }
+        guard let processedImage = processedImage else {
+            showingImageAlert = true
+            return
+        }
 
         let imageSaver = ImageSaver()
 
